@@ -73,6 +73,8 @@ def clock():
                 print("Time left: ", time_left)
                 time.sleep(1)
             print("Time's up!")
+        if choice == 4:
+            break
 
 while running:    
   command = input("Enter command: ")
@@ -111,7 +113,8 @@ while running:
       os.remove(document_name)
       print("Document deleted successfully!")
   elif command == "clock": 
-
+      clock()
+      
         
 
 
