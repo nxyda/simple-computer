@@ -35,6 +35,8 @@ while True:
                 subprocess.Popen(['python', 'paint.py'])
             elif calculator_img.get_rect(topleft = (50, 50)).collidepoint(mouse_pos):
                 subprocess.Popen(['python', 'calculator.py'])
+            elif clock_img.get_rect(topleft = (50, 250)).collidepoint(mouse_pos):
+                subprocess.Popen(['python', 'clock.py'])
     screen.fill(BLUE)
 
 
