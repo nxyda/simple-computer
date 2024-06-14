@@ -1,11 +1,6 @@
 import pygame
 import sys
-import random
-import string
-import datetime
-import time
-import calendar as cal_module
-import os
+import subprocess
 
 pygame.init()
 screen_width = 800
@@ -14,13 +9,11 @@ screen_height = 600
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 BLUE = (0, 0, 255)
-GREEN = (0, 255, 0)
-RED = (255, 0, 0)
-YELLOW = (255, 255, 0)
 
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("system")
 clock = pygame.time.Clock()
+FPS = 60 
 
 font = pygame.font.Font(None, 36)
 
@@ -36,27 +29,42 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_pos = event.pos
+            if paint_img.get_rect(topleft=(150, 50)).collidepoint(mouse_pos):
+                subprocess.Popen(['python', 'paint.py'])
 
-    screen.fill(WHITE)
+    screen.fill(BLUE)
 
-    # Draw calculator button
-    calculator_rect = pygame.Rect(50, 50, calculator_img.get_width(), calculator_img.get_height())
+
+    calculator_rect = pygame.Rect(50, 50, calculator_img.get_width(),
+                                  calculator_img.get_height())
     screen.blit(calculator_img, calculator_rect)
 
-    # Draw calendar button
-    calendar_rect = pygame.Rect(50, 150, calendar_img.get_width(), calendar_img.get_height())
+
+    calendar_rect = pygame.Rect(50, 150, calendar_img.get_width(),
+                                calendar_img.get_height())
     screen.blit(calendar_img, calendar_rect)
 
-    # Draw clock button
-    clock_rect = pygame.Rect(50, 250, clock_img.get_width(), clock_img.get_height())
+
+    clock_rect = pygame.Rect(50, 250, clock_img.get_width(),
+                             clock_img.get_height())
     screen.blit(clock_img, clock_rect)
 
-    # Draw document button
-    document_rect = pygame.Rect(50, 350, document_img.get_width(), document_img.get_height())
+
+    document_rect = pygame.Rect(50, 350, document_img.get_width(),
+                                document_img.get_height())
     screen.blit(document_img, document_rect)
 
-    # Draw folder button
-    folder_rect = pygame.Rect(50, 450, folder_img.get_width(), folder_img.
-                              
-  pygame.display.update()
-  clock.tick(FPS)
+
+    folder_rect = pygame.Rect(50, 450, folder_img.get_width(),
+                              folder_img.get_height())
+    screen.blit(folder_img, folder_rect)
+
+
+    paint_rect = pygame.Rect(150, 50, paint_img.get_width(),
+                             paint_img.get_height())
+    screen.blit(paint_img, paint_rect)
+
+    pygame.display.update()
+    clock.tick(FPS)
