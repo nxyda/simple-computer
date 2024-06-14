@@ -2,6 +2,8 @@ import pygame
 import sys
 import math
 
+#TEST
+
 pygame.init()
 
 WIDTH, HEIGHT = 800, 600
