@@ -24,7 +24,7 @@ selected_shape = shapes[0]
 
 button_size = 30
 button_padding = 5
-return_button_rect = pygame.Rect(WIDTH - 100, HEIGHT - 50, 80, 30)  
+
 
 def draw_color_buttons():
     x = WIDTH - button_size - button_padding
@@ -65,12 +65,6 @@ def draw_triangle(pos, size):
               (pos[0] + size / 2, pos[1] + half_height)]
     pygame.draw.polygon(win, selected_color, points)
 
-def draw_return_button():
-    pygame.draw.rect(win, BLACK, return_button_rect)
-    font = pygame.font.Font(None, 24)
-    text = font.render('Return', True, WHITE)
-    text_rect = text.get_rect(center=return_button_rect.center)
-    win.blit(text, text_rect)
 
 win.fill(WHITE)
 
@@ -80,9 +74,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            if return_button_rect.collidepoint(event.pos):
-                running = False
-            elif WIDTH - button_size - button_padding <= event.pos[0] <= WIDTH - button_padding:
+            if WIDTH - button_size - button_padding <= event.pos[0] <= WIDTH - button_padding:
                 y = button_padding
                 for color in colors:
                     if y <= event.pos[1] <= y + button_size:
@@ -122,7 +114,6 @@ while running:
     draw_color_buttons()
     draw_brush_size_indicators()
     draw_shape_indicators()
-    draw_return_button()
     pygame.display.update()
 
 pygame.quit()
