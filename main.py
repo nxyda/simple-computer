@@ -33,7 +33,8 @@ while True:
             mouse_pos = event.pos
             if paint_img.get_rect(topleft=(150, 50)).collidepoint(mouse_pos):
                 subprocess.Popen(['python', 'paint.py'])
-
+            elif calculator_img.get_rect(topleft = (50, 50)).collidepoint(mouse_pos):
+                subprocess.Popen(['python', 'calculator.py'])
     screen.fill(BLUE)
 
 

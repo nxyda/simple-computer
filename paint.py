@@ -2,7 +2,6 @@ import pygame
 import sys
 import math
 
-#TEST
 
 pygame.init()
 
