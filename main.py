@@ -38,6 +38,8 @@ while True:
                 subprocess.Popen(['python', 'calculator.py'])
             elif clock_img.get_rect(topleft = (50, 250)).collidepoint(mouse_pos):
                 subprocess.Popen(['python', 'clock.py'])
+            elif calendar_img.get_rect(topleft = (50, 150)).collidepoint(mouse_pos):
+                subprocess.Popen(["python", "calendar_app.py"])
     screen.fill(BLUE)
 
 
