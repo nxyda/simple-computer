@@ -16,6 +16,7 @@ GRAY = (200, 200, 200)
 DARK_GRAY = (100, 100, 100)
 
 font = pygame.font.Font(None, 36)
+circle_image = pygame.image.load('data/circle.png')  
 
 events = {}
 
@@ -83,11 +84,57 @@ def show_calendar():
             for i, day in enumerate(week):
                 if day != 0:
                     draw_text(str(day), 50 + i * 100, y_offset, center=True)
+                    if year in events and month in events[year] and day in events[year][month]:
+                        screen.blit(circle_image, (50 + i * 100 - 30, y_offset - 30)) 
             y_offset += 50
         draw_button("Previous", 50, 500, w=150, h=50)
         draw_button("Next", 600, 500, w=150, h=50)
         draw_button("Back", 325, 500, w=150, h=50)
         pygame.display.flip()
+
+    def show_day_events(year, month, day):
+        running = True
+        while running:
+            screen.fill(WHITE)
+            draw_text(f"Events for {day}/{month}/{year}:", screen_width // 2, 50, center=True)
+            if year in events and month in events[year] and day in events[year][month]:
+                for i, event in enumerate(events[year][month][day]):
+                    draw_text(event, 50, 100 + i * 30)
+                    draw_button("Remove Event", 300, 500)
+            draw_button("Add Event", 100, 500)
+            draw_button("Back", 500, 500)
+            pygame.display.flip()
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    x, y = event.pos
+                    if 100 <= x <= 300 and 500 <= y <= 550:
+                        event_text = input_text(f"Enter event for {day}/{month}/{year}:", 300, 400)
+                        if event_text:
+                            if year not in events:
+                                events[year] = {}
+                            if month not in events[year]:
+                                events[year][month] = {}
+                            if day not in events[year][month]:
+                                events[year][month][day] = []
+                            events[year][month][day].append(event_text)
+                    elif 300 <= x <= 500 and 500 <= y <= 550:
+                        if year in events and month in events[year] and day in events[year][month]:
+                            event_to_remove = input_text("Enter event to remove:", 300, 400)
+                            if event_to_remove in events[year][month][day]:
+                                events[year][month][day].remove(event_to_remove)
+                                if not events[year][month][day]:
+                                    del events[year][month][day]
+                                if not events[year][month]:
+                                    del events[year][month]
+                                if not events[year]:
+                                    del events[year]
+
+                    elif 500 <= x <= 700 and 500 <= y <= 550:
+                        running = False
 
     running = True
     while running:
@@ -110,90 +157,18 @@ def show_calendar():
                         year += 1
                 elif 325 <= x <= 475 and 500 <= y <= 550:
                     running = False
+                else:
+                    cal = cal_module.Calendar()
+                    month_days = cal.monthdayscalendar(year, month)
+                    y_offset = 150
+                    for week in month_days:
+                        for i, day in enumerate(week):
+                            if day != 0:
+                                day_rect = pygame.Rect(50 + i * 100 - 25, y_offset - 25, 50, 50)
+                                if day_rect.collidepoint(x, y):
+                                    show_day_events(year, month, day)
+                        y_offset += 50
 
-def add_event():
-    year = int(input_text("Enter year:", 300, 200))
-    month = int(input_text("Enter month:", 300, 250))
-    day = int(input_text("Enter day:", 300, 300))
-    event = input_text("Enter event:", 300, 350)
-    if year not in events:
-        events[year] = {}
-    if month not in events[year]:
-        events[year][month] = {}
-    if day not in events[year][month]:
-        events[year][month][day] = []
-    events[year][month][day].append(event)
-
-def remove_event():
-    year = int(input_text("Enter year:", 300, 200))
-    month = int(input_text("Enter month:", 300, 250))
-    day = int(input_text("Enter day:", 300, 300))
-    if year in events and month in events[year] and day in events[year][month]:
-        event = input_text("Enter event to remove:", 300, 350)
-        if event in events[year][month][day]:
-            events[year][month][day].remove(event)
-            if not events[year][month][day]:
-                del events[year][month][day]
-            if not events[year][month]:
-                del events[year][month]
-            if not events[year]:
-                del events[year]
-
-def show_events():
-    year = int(input_text("Enter year:", 300, 200))
-    month = int(input_text("Enter month:", 300, 250))
-    if year in events and month in events[year]:
-        running = True
-        event_texts = []
-        for day in events[year][month]:
-            for event in events[year][month][day]:
-                event_texts.append(f"{day}: {event}")
-        while running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if 300 <= event.pos[0] <= 500 and 500 <= event.pos[1] <= 550:
-                        running = False
-
-            screen.fill(WHITE)
-            for i, event_text in enumerate(event_texts):
-                draw_text(event_text, 50, 50 + i * 30)
-            draw_button("Back", 300, 500)
-            pygame.display.flip()
-    else:
-        print("No events in this month.")
-
-def calendar():
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                x, y = event.pos
-                if 300 <= x <= 500:
-                    if 150 <= y <= 200:
-                        show_calendar()
-                    elif 220 <= y <= 270:
-                        add_event()
-                    elif 290 <= y <= 340:
-                        remove_event()
-                    elif 360 <= y <= 410:
-                        show_events()
-                    elif 430 <= y <= 480:
-                        running = False
-
-        screen.fill(WHITE)
-        draw_button("Show Calendar", 300, 150)
-        draw_button("Add Event", 300, 220)
-        draw_button("Remove Event", 300, 290)
-        draw_button("Show Events", 300, 360)
-        draw_button("Exit", 300, 430)
-        pygame.display.flip()
-
-calendar()
+show_calendar()
 pygame.quit()
 sys.exit()
