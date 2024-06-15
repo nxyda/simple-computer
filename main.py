@@ -23,6 +23,7 @@ clock_img = pygame.image.load("data/clock.png")
 document_img = pygame.image.load("data/document.png")
 folder_img = pygame.image.load("data/folder.png")
 paint_img = pygame.image.load("data/paint.png")
+settings_img = pygame.image.load("data/settings.png")
 
 while True:
     for event in pygame.event.get():
@@ -68,6 +69,11 @@ while True:
     paint_rect = pygame.Rect(150, 50, paint_img.get_width(),
                              paint_img.get_height())
     screen.blit(paint_img, paint_rect)
+
+    settings_rect = pygame.Rect(150, 150, settings_img.get_width(), settings_img.get_height())
+    screen.blit(settings_img, settings_rect)
+
+    
 
     pygame.display.update()
     clock.tick(FPS)
