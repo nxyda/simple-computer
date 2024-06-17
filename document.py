@@ -4,22 +4,18 @@ import os
 
 pygame.init()
 
-# Ustawienia ekranu
 screen_width = 800
 screen_height = 600
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Pygame Notepad")
 
-# Kolory
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (200, 200, 200)
 DARK_GRAY = (100, 100, 100)
 
-# Czcionka
 font = pygame.font.Font(None, 36)
 
-# Prostokąt dla tekstu
 text_area = pygame.Rect(50, 50, 700, 500)
 text_color = BLACK
 bg_color = WHITE
@@ -29,21 +25,17 @@ cursor_pos = (60, 60)
 cursor_visible = True
 cursor_blink_interval = 500
 
-# Tekst
 text = ""
 
-# Folder do zapisywania plików
 texts_folder = "texts"
 if not os.path.exists(texts_folder):
     os.makedirs(texts_folder)
 filename = os.path.join(texts_folder, "note.txt")
 
-# Pole tekstowe na nazwę pliku
 filename_input_rect = pygame.Rect(200, 10, 200, 30)
 filename_input_color = DARK_GRAY
 filename_input_text = ""
 
-# Funkcja do rysowania tekstu
 def draw_text(surface, text, font, color, rect, aa=False, bkg=None):
     rect = pygame.Rect(rect)
     y = rect.top
@@ -189,17 +181,14 @@ def notepad():
             pygame.draw.line(screen, cursor_color, (cursor_pos_x, cursor_pos_y),
                              (cursor_pos_x, cursor_pos_y + font.size(text[cursor_pos[1]:])[1]), cursor_width)
 
-        # Przycisk Wyczyść
         clear_button_rect = pygame.Rect(50, 10, 100, 30)
         pygame.draw.rect(screen, DARK_GRAY, clear_button_rect)
         draw_text(screen, "clear", font, WHITE, clear_button_rect, True)
 
-        # Przycisk Zapisz jako
         save_as_button_rect = pygame.Rect(600, 10, 150, 30)
         pygame.draw.rect(screen, DARK_GRAY, save_as_button_rect)
         draw_text(screen, "save as", font, WHITE, save_as_button_rect, True)
 
-        # Pole tekstowe na nazwę pliku
         pygame.draw.rect(screen, WHITE, filename_input_rect)
         draw_text(screen, filename_input_text, font, BLACK, filename_input_rect)
 
@@ -209,7 +198,6 @@ def notepad():
     pygame.quit()
     sys.exit()
 
-# Uruchomienie notatnika
 notepad()
 
 
