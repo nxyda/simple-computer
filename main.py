@@ -103,8 +103,10 @@ while True:
 
     for idx, text_file in enumerate(list_text_files(texts_folder)):
         draw_icon(text_img, 250, 50 + idx * 100)
-        text_surface = font.render(text_file, True, WHITE)
-        screen.blit(text_surface, (270, 115 + idx * 100))
+        text_name, _ = os.path.splitext(text_file)  
+        text_surface = font.render(text_name, True, WHITE)
+        screen.blit(text_surface, (260, 115 + idx * 100))
+
 
     pygame.display.update()
     clock.tick(FPS)

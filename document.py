@@ -25,8 +25,6 @@ cursor_pos = (60, 60)
 cursor_visible = True
 cursor_blink_interval = 500
 
-text = ""
-
 texts_folder = "texts"
 if not os.path.exists(texts_folder):
     os.makedirs(texts_folder)
@@ -73,7 +71,6 @@ def save_file(filename, text):
     except IOError as e:
         print(f"Error saving file: {e}")
 
-
 def load_file(filename):
     try:
         with open(filename, "r") as file:
@@ -91,8 +88,8 @@ def clear_text():
 def save_as_dialog():
     global text, filename
 
-    input_rect = pygame.Rect(100, 200, 600, 50) 
-    input_text = ""  
+    input_rect = pygame.Rect(100, 200, 600, 50)
+    input_text = ""
 
     clock = pygame.time.Clock()
     dialog_active = True
@@ -122,82 +119,118 @@ def save_as_dialog():
         pygame.display.flip()
         clock.tick(30)
 
+def open_file_dialog():
+    global text, filename
 
-
-def notepad():
-    global text, cursor_visible, cursor_timer, filename_input_text, filename_input_active
-    text = load_file(filename)
-    cursor_timer = pygame.time.get_ticks()
-    filename_input_text = ""  
-    filename_input_active = False  
+    input_rect = pygame.Rect(100, 200, 600, 50)
+    input_text = ""
 
     clock = pygame.time.Clock()
+    dialog_active = True
 
-    running = True
-    while running:
-        screen.fill(bg_color)
-
+    while dialog_active:
+        screen.fill(WHITE)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                pygame.quit()
+                sys.exit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
-                    text += "\n"
+                    filename = os.path.join(texts_folder, input_text + ".txt")
+                    if os.path.exists(filename):
+                        text = load_file(filename)
+                    else:
+                        print(f"File '{filename}' does not exist.")
+                    dialog_active = False
+                elif event.key == pygame.K_ESCAPE:
+                    dialog_active = False
                 elif event.key == pygame.K_BACKSPACE:
-                    text = text[:-1]
-                elif event.key == pygame.K_TAB:
-                    text += "    "
+                    input_text = input_text[:-1]
                 else:
-                    text += event.unicode
+                    input_text += event.unicode
 
-                if event.mod & pygame.KMOD_CTRL and event.key == pygame.K_s:
-                    save_file(filename, text)
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_pos = event.pos
-                if clear_button_rect.collidepoint(mouse_pos):
-                    clear_text()
-                elif save_as_button_rect.collidepoint(mouse_pos):
-                    save_as_dialog()
+        pygame.draw.rect(screen, GRAY, input_rect, 2)
 
-                elif filename_input_rect.collidepoint(mouse_pos):
-                    filename_input_active = True
-                else:
-                    filename_input_active = False
-
-                if filename_input_active:
-                    filename_input_text += event.unicode
-
-        pygame.draw.rect(screen, GRAY, text_area)
-        draw_text(screen, text, font, text_color, text_area.inflate(-10, -10))
-
-        current_time = pygame.time.get_ticks()
-        if current_time - cursor_timer > cursor_blink_interval:
-            cursor_timer = current_time
-            cursor_visible = not cursor_visible
-
-        if cursor_visible:
-            cursor_pos_x = text_area.left + font.size(text[:cursor_pos[1]])[0]
-            cursor_pos_y = text_area.top + cursor_pos[0] + 10
-            pygame.draw.line(screen, cursor_color, (cursor_pos_x, cursor_pos_y),
-                             (cursor_pos_x, cursor_pos_y + font.size(text[cursor_pos[1]:])[1]), cursor_width)
-
-        clear_button_rect = pygame.Rect(50, 10, 100, 30)
-        pygame.draw.rect(screen, DARK_GRAY, clear_button_rect)
-        draw_text(screen, "clear", font, WHITE, clear_button_rect, True)
-
-        save_as_button_rect = pygame.Rect(600, 10, 150, 30)
-        pygame.draw.rect(screen, DARK_GRAY, save_as_button_rect)
-        draw_text(screen, "save as", font, WHITE, save_as_button_rect, True)
-
-        pygame.draw.rect(screen, WHITE, filename_input_rect)
-        draw_text(screen, filename_input_text, font, BLACK, filename_input_rect)
+        draw_text(screen, input_text, font, BLACK, input_rect)
 
         pygame.display.flip()
-        clock.tick(60)
+        clock.tick(30)
 
-    pygame.quit()
-    sys.exit()
+# Global variables
+text = ""
+cursor_visible = True
+cursor_timer = pygame.time.get_ticks()
+filename_input_text = ""
+filename_input_active = False
 
-notepad()
+# Load the initial file
+text = load_file(filename)
 
+clock = pygame.time.Clock()
 
+running = True
+while running:
+    screen.fill(bg_color)
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN:
+                text += "\n"
+            elif event.key == pygame.K_BACKSPACE:
+                text = text[:-1]
+            elif event.key == pygame.K_TAB:
+                text += "    "
+            else:
+                text += event.unicode
+
+            if event.mod & pygame.KMOD_CTRL and event.key == pygame.K_s:
+                save_file(filename, text)
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_pos = event.pos
+            if clear_button_rect.collidepoint(mouse_pos):
+                clear_text()
+            elif save_as_button_rect.collidepoint(mouse_pos):
+                save_as_dialog()
+            elif open_button_rect.collidepoint(mouse_pos):
+                open_file_dialog()
+            elif filename_input_rect.collidepoint(mouse_pos):
+                filename_input_active = True
+            else:
+                filename_input_active = False
+
+    pygame.draw.rect(screen, GRAY, text_area)
+    draw_text(screen, text, font, text_color, text_area.inflate(-10, -10))
+
+    current_time = pygame.time.get_ticks()
+    if current_time - cursor_timer > cursor_blink_interval:
+        cursor_timer = current_time
+        cursor_visible = not cursor_visible
+
+    if cursor_visible:
+        cursor_pos_x = text_area.left + font.size(text[:cursor_pos[1]])[0]
+        cursor_pos_y = text_area.top + cursor_pos[0] + 10
+        pygame.draw.line(screen, cursor_color, (cursor_pos_x, cursor_pos_y),
+                         (cursor_pos_x, cursor_pos_y + font.size(text[cursor_pos[1]:])[1]), cursor_width)
+
+    clear_button_rect = pygame.Rect(50, 10, 100, 30)
+    pygame.draw.rect(screen, DARK_GRAY, clear_button_rect)
+    draw_text(screen, "clear", font, WHITE, clear_button_rect, True)
+
+    save_as_button_rect = pygame.Rect(600, 10, 150, 30)
+    pygame.draw.rect(screen, DARK_GRAY, save_as_button_rect)
+    draw_text(screen, "save as", font, WHITE, save_as_button_rect, True)
+
+    open_button_rect = pygame.Rect(300, 10, 150, 30)
+    pygame.draw.rect(screen, DARK_GRAY, open_button_rect)
+    draw_text(screen, "open file", font, WHITE, open_button_rect, True)
+
+    pygame.draw.rect(screen, WHITE, filename_input_rect)
+    draw_text(screen, filename_input_text, font, BLACK, filename_input_rect)
+
+    pygame.display.flip()
+    clock.tick(60)
+
+pygame.quit()
+sys.exit()
