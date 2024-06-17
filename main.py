@@ -65,9 +65,9 @@ while True:
                                                 350)).collidepoint(mouse_pos):
                 subprocess.Popen(["python", "document.py"])
             for idx, text_file in enumerate(list_text_files(texts_folder)):
-                file_rect = draw_icon(text_img, 300, 50 + idx * 100)
+                file_rect = draw_icon(text_img, 250, 50 + idx * 100)
                 if file_rect.collidepoint(mouse_pos):
-                    subprocess.Popen(["python", "document.py"])
+                    subprocess.Popen(["python", "open_document.py", os.path.join(texts_folder, text_file)])
 
     screen.fill(BLUE)
 
