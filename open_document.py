@@ -14,8 +14,8 @@ if not os.path.isfile(filename):
     print(f"File '{filename}' does not exist.")
     sys.exit(1)
 
-screen_width = 800
-screen_height = 600
+screen_width = 600
+screen_height = 400
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Open Document")
 
