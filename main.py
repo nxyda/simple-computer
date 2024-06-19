@@ -27,6 +27,7 @@ paint_img = pygame.image.load("data/paint.png")
 settings_img = pygame.image.load("data/settings.png")
 text_img = pygame.image.load("data/text.png")
 snake_img = pygame.image.load("data/snake.png")
+minesweeper_img = pygame.image.load("data/minesweeper.png")
 
 texts_folder = "texts"
 if not os.path.exists(texts_folder):
@@ -78,6 +79,8 @@ while True:
                 subprocess.Popen(["python", "settings.py"])
             elif snake_img.get_rect(topleft=(150,250)).collidepoint(mouse_pos):
                 subprocess.Popen(["python", "snake.py"])
+            elif minesweeper_img.get_rect(topleft=(150,350)).collidepoint(mouse_pos):
+                subprocess.Popen(["python", "minesweeper.py"])
             for idx, text_file in enumerate(list_text_files(texts_folder)):
                 file_rect = draw_icon(text_img, 300, 50 + idx * 100)
                 if file_rect.collidepoint(mouse_pos):
@@ -119,6 +122,10 @@ while True:
     draw_icon(snake_img, 150, 250)
     text_surface = font.render("snake", True, WHITE)
     screen.blit(text_surface, (156, 315))    
+
+    draw_icon(minesweeper_img, 150, 350)
+    text_surface = font.render("minesweeper", True, WHITE)
+    screen.blit(text_surface, (135, 415))
 
     
     for idx, text_file in enumerate(list_text_files(texts_folder)):
