@@ -84,7 +84,7 @@ while True:
             for idx, text_file in enumerate(list_text_files(texts_folder)):
                 file_rect = draw_icon(text_img, 300, 50 + idx * 100)
                 if file_rect.collidepoint(mouse_pos):
-                    subprocess.Popen(["python", "document.py", os.path.join(texts_folder, text_file)])
+                    subprocess.Popen(["python", "open_document.py", os.path.join(texts_folder, text_file)])
 
     if background_image:
         screen.blit(background_image, (0, 0))
